@@ -1,3 +1,4 @@
+import { StyleSheet } from "react-native";
 import { TextInput } from "react-native-paper";
 
 type CurrencyInputProps = {
@@ -18,6 +19,16 @@ export default function CurrencyInput({
             value={value}
             onChangeText={onChangeText}
             keyboardType="numeric" 
+            mode="outlined"
+            style={styles.currencyInput}
+            outlineStyle={{
+                borderRadius: 24
+            }}
         />
     )
 };
+
+const styles = StyleSheet.create({
+    currencyInput: {
+    }
+})
