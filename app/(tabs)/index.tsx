@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { View, Text, StyleSheet, TouchableWithoutFeedback, Keyboard } from "react-native";
 import { Button, IconButton, List, TextInput } from "react-native-paper";
 import CurrencyInput from "../../src/components/CurrencyInput";
@@ -6,6 +6,7 @@ import CurrenciesModal from "../../src/components/CurrenciesModal";
 import CurrencyField from "../../src/components/CurrencyField";
 import { convert } from "../../src/lib/currency";
 import { fetchRates } from "../../src/lib/api";
+import { getCurrencyDisplayName } from "../../src/lib/currencyNames";
 
 export default function Home() {
     const [fromCurrency, setFromCurrency] = useState("USD");
@@ -29,6 +30,12 @@ export default function Home() {
             }
         })();
     }, []);
+
+    const options = useMemo(() => {
+        return [...availableCurrencies].sort((a, b) =>
+            getCurrencyDisplayName(a).localeCompare(getCurrencyDisplayName(b))
+        );
+    }, [availableCurrencies]);
 
 
 
@@ -95,7 +102,7 @@ export default function Home() {
                 />
 
                 {/* Swap currency order  */}
-                <IconButton icon="swap-vertical" onPress={handleSwap} style={styles.swap}/>
+                <IconButton icon="swap-vertical" onPress={handleSwap} style={styles.swap} />
 
                 <CurrenciesModal
                     visible={modalVisible}
@@ -103,7 +110,7 @@ export default function Home() {
                         setModalVisible(false)
                         setSelecting(null);
                     }}
-                    availableCurrencies={availableCurrencies}
+                    availableCurrencies={options}
                     onSelect={(currency) => {
                         if (selecting === "from") {
                             setFromCurrency(currency);
@@ -124,9 +131,9 @@ export default function Home() {
                             }
                         }
                     }}
-                   /*  title={
-                        selecting === "from" ? "Select source currency" : "Select target currency"
-                    } */
+                /*  title={
+                     selecting === "from" ? "Select source currency" : "Select target currency"
+                 } */
                 />
             </View>
 
