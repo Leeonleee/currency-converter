@@ -7,6 +7,7 @@ import CurrencyField from "../../src/components/CurrencyField";
 import { convert } from "../../src/lib/currency";
 import { fetchRates } from "../../src/lib/api";
 import { getCurrencyDisplayName } from "../../src/lib/currencyNames";
+import { isCrypto } from "../../src/lib/crypto";
 
 export default function Home() {
     const [fromCurrency, setFromCurrency] = useState("USD");
@@ -17,6 +18,7 @@ export default function Home() {
     const [availableCurrencies, setAvailableCurrencies] = useState<string[]>([]);
     const [modalVisible, setModalVisible] = useState(false);
     const [selecting, setSelecting] = useState<"from" | "to" | null>(null);
+    const [showCrypto, setShowCrypto] = useState(false);
 
     // Load available currencies on launch
     useEffect(() => {
@@ -32,10 +34,12 @@ export default function Home() {
     }, []);
 
     const options = useMemo(() => {
-        return [...availableCurrencies].sort((a, b) =>
+        return [...availableCurrencies]
+        .filter((c) => showCrypto || !isCrypto(c)) 
+        .sort((a, b) =>
             getCurrencyDisplayName(a).localeCompare(getCurrencyDisplayName(b))
         );
-    }, [availableCurrencies]);
+    }, [availableCurrencies, showCrypto]);
 
 
 
@@ -127,10 +131,14 @@ export default function Home() {
                             if (toValue) {
                                 const n = parseFloat(toValue);
                                 const res = convert(n, currency, fromCurrency, rates);
-                                setToValue(Number.isFinite(res) ? res.toFixed(2) : "")
+                                setFromValue(Number.isFinite(res) ? res.toFixed(2) : "")
+                            } else {
+                                setFromValue("");
                             }
                         }
                     }}
+                    showCrypto={showCrypto}
+                    onToggleCrypto={setShowCrypto}
                 /*  title={
                      selecting === "from" ? "Select source currency" : "Select target currency"
                  } */

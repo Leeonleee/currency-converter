@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react"
 import { View, StyleSheet, FlatList, Pressable, StyleProp, ViewStyle} from "react-native"
-import { Divider, List, Modal, Portal, Text, useTheme, IconButton } from "react-native-paper"
+import { Divider, List, Modal, Portal, Text, useTheme, IconButton, Switch } from "react-native-paper"
 import { getCurrencyDisplayName } from "../lib/currencyNames";
 
 type CurrenciesModalProps = {
@@ -10,6 +10,8 @@ type CurrenciesModalProps = {
     onSelect: (currency: string) => void;
     title?: string;
     style?: StyleProp<ViewStyle>;
+    showCrypto?: boolean;
+    onToggleCrypto?: (value: boolean) => void;
 }
 
 
@@ -19,7 +21,9 @@ export default function CurrenciesModal({
     availableCurrencies,
     onSelect,
     title = "Select currency",
-    style
+    style,
+    showCrypto,
+    onToggleCrypto
 }: CurrenciesModalProps) {
     const theme = useTheme();
 
@@ -56,6 +60,15 @@ export default function CurrenciesModal({
 
                 <View style={styles.header}>
                     <Text variant="titleLarge">{title}</Text>
+
+                  {/*   {typeof showCrypto === "boolean" && onToggleCrypto ? (
+                        <View>
+                            <Text>Crypto</Text>
+                            <Switch value={showCrypto} onValueChange={onToggleCrypto}/>
+                        </View>
+                    ) : null } */}
+                    <Switch value={showCrypto} onValueChange={onToggleCrypto}/>
+
                     <IconButton
                         onPress={onDismiss}
                         icon="close"
