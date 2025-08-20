@@ -1,6 +1,7 @@
 import { useCallback, useState } from "react"
 import { View, StyleSheet, FlatList, Pressable, StyleProp, ViewStyle} from "react-native"
 import { Divider, List, Modal, Portal, Text, useTheme, IconButton } from "react-native-paper"
+import { getCurrencyDisplayName } from "../lib/currencyNames";
 
 type CurrenciesModalProps = {
     visible: boolean;
@@ -23,9 +24,10 @@ export default function CurrenciesModal({
     const theme = useTheme();
 
     const render = ({ item }: { item: string }) => {
+        const name = getCurrencyDisplayName(item);
         return (
             <List.Item
-                title={item}
+                title={`${name} (${item})`}
                 onPress={() => {
                     onSelect(item);
                     onDismiss();
