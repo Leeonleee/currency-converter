@@ -19,6 +19,8 @@ export default function Home() {
     const [modalVisible, setModalVisible] = useState(false);
     const [selecting, setSelecting] = useState<"from" | "to" | null>(null);
     const [showCrypto, setShowCrypto] = useState(false);
+    const [lastEdited, setLastEdited] = useState<"from" | "to" | null>(null);
+    const ratesReady = !!rates[fromCurrency] && !!rates[toCurrency]
 
     // Load available currencies on launch
     useEffect(() => {
@@ -33,6 +35,23 @@ export default function Home() {
         })();
     }, []);
 
+    // when rates or either currency change, recompute based on the last edited side
+    useEffect(() => {
+        if (!ratesReady) return;
+
+        if (lastEdited === "from" && fromValue) {
+            const n = parseFloat(fromValue);
+            if (Number.isNaN(n)) return;
+            const res = convert(n, fromCurrency, toCurrency, rates);
+            setToValue(Number.isFinite(res) ? res.toFixed(2) : "")
+        } else if (lastEdited === "to" && toValue) {
+            const n = parseFloat(toValue);
+            if (Number.isNaN(n)) return;
+            const res = convert(n, toCurrency, fromCurrency, rates);
+            setFromCurrency(Number.isFinite(res) ? res.toFixed(2) : "")
+        }
+    }, [ratesReady, fromCurrency, toCurrency])
+
     const options = useMemo(() => {
         return [...availableCurrencies]
         .filter((c) => showCrypto || !isCrypto(c)) 
@@ -44,6 +63,7 @@ export default function Home() {
 
 
     const handleFromChange = (val: string) => {
+        setLastEdited("from");
         setFromValue(val);
         const n = parseFloat(val);
         if (!val) {
@@ -55,6 +75,7 @@ export default function Home() {
     }
 
     const handleToChange = (val: string) => {
+        setLastEdited("to");
         setToValue(val);
         const n = parseFloat(val)
         if (!val) {
