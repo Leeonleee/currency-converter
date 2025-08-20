@@ -1,4 +1,4 @@
-import { StyleProp, StyleSheet, View, ViewStyle } from "react-native";
+import { Keyboard, ScrollView, StyleProp, StyleSheet, View, ViewStyle } from "react-native";
 import CurrencyInput from "./CurrencyInput"
 import { Text, Button } from "react-native-paper";
 
@@ -24,7 +24,10 @@ export default function CurrencyField({
         <View style={[styles.container, style]}>
             <View style={styles.top}>
                 <Text>{title}</Text>
-                <Button onPress={onPressChangeCurrency}>
+                <Button
+                    onPressIn={Keyboard.dismiss}
+                    onPress={onPressChangeCurrency}
+                    >
                     Change Currency
                 </Button>
             </View>

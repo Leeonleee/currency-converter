@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, TouchableWithoutFeedback, Keyboard } from "react-native";
 import { Button, List, TextInput } from "react-native-paper";
 import CurrencyInput from "../../src/components/CurrencyInput";
 import CurrenciesModal from "../../src/components/CurrenciesModal";
@@ -68,68 +68,71 @@ export default function Home() {
     }
 
     return (
-        <View style={styles.main}>
-            <CurrencyField
-                title="From"
-                currency={fromCurrency}
-                value={fromValue} 
-                onChangeText={handleFromChange}
-                onPressChangeCurrency={() => {
-                    setSelecting("from");
-                    setModalVisible(true);
-                }}
-                style={styles.currencyField}
-            />
-            
-            <CurrencyField
-                title="To"
-                currency={toCurrency}
-                value={toValue} 
-                onChangeText={handleToChange}
-                onPressChangeCurrency={() => {
-                    setSelecting("to");
-                    setModalVisible(true);
-                }}
-                style={styles.currencyField}
-            />
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+            <View style={styles.main}>
+                <CurrencyField
+                    title="From"
+                    currency={fromCurrency}
+                    value={fromValue}
+                    onChangeText={handleFromChange}
+                    onPressChangeCurrency={() => {
+                        setSelecting("from");
+                        setModalVisible(true);
+                    }}
+                    style={styles.currencyField}
+                />
 
-            {/* Swap currency order  */}
-            <Button onPress={handleSwap}>
-                Swap
-            </Button>
+                <CurrencyField
+                    title="To"
+                    currency={toCurrency}
+                    value={toValue}
+                    onChangeText={handleToChange}
+                    onPressChangeCurrency={() => {
+                        setSelecting("to");
+                        setModalVisible(true);
+                    }}
+                    style={styles.currencyField}
+                />
 
-            <CurrenciesModal
-                visible={modalVisible}
-                onDismiss={() => {
-                    setModalVisible(false)
-                    setSelecting(null);
-                }}
-                availableCurrencies={availableCurrencies}
-                onSelect={(currency) => {
-                    if (selecting === "from") {
-                        setFromCurrency(currency);
-                        if (fromValue) {
-                            const n = parseFloat(fromValue);
-                            const res = convert(n, currency, toCurrency, rates);
-                            setToValue(Number.isFinite(res) ? res.toFixed(2) : "")
-                        } else {
-                            setToValue("")
+                {/* Swap currency order  */}
+                <Button onPress={handleSwap}>
+                    Swap
+                </Button>
+
+                <CurrenciesModal
+                    visible={modalVisible}
+                    onDismiss={() => {
+                        setModalVisible(false)
+                        setSelecting(null);
+                    }}
+                    availableCurrencies={availableCurrencies}
+                    onSelect={(currency) => {
+                        if (selecting === "from") {
+                            setFromCurrency(currency);
+                            if (fromValue) {
+                                const n = parseFloat(fromValue);
+                                const res = convert(n, currency, toCurrency, rates);
+                                setToValue(Number.isFinite(res) ? res.toFixed(2) : "")
+                            } else {
+                                setToValue("")
+                            }
                         }
-                    }
-                    if (selecting === "to") {
-                        setToCurrency(currency);
-                        if (toValue) {
-                            const n = parseFloat(toValue);
-                            const res = convert(n, currency, fromCurrency, rates);
-                            setToValue(Number.isFinite(res) ? res.toFixed(2) : "")
+                        if (selecting === "to") {
+                            setToCurrency(currency);
+                            if (toValue) {
+                                const n = parseFloat(toValue);
+                                const res = convert(n, currency, fromCurrency, rates);
+                                setToValue(Number.isFinite(res) ? res.toFixed(2) : "")
+                            }
                         }
+                    }}
+                    title={
+                        selecting === "from" ? "Select source currency" : "Select target currency"
                     }
-                }}
-                title={
-                    selecting === "from" ? "Select source currency" : "Select target currency"
-                }
-            />
-        </View>
+                />
+            </View>
+
+        </TouchableWithoutFeedback>
     );
 }
 
@@ -141,5 +144,5 @@ const styles = StyleSheet.create({
     },
     currencyField: {
         paddingHorizontal: 64
-    }
+    },
 })

@@ -1,5 +1,5 @@
-import { useState } from "react"
-import { View, StyleSheet, FlatList, Pressable } from "react-native"
+import { useCallback, useState } from "react"
+import { View, StyleSheet, FlatList, Pressable, StyleProp, ViewStyle } from "react-native"
 import { Divider, List, Modal, Portal, Text, useTheme } from "react-native-paper"
 
 type CurrenciesModalProps = {
@@ -8,31 +8,32 @@ type CurrenciesModalProps = {
     availableCurrencies: string[];
     onSelect: (currency: string) => void;
     title?: string;
+    style?: StyleProp<ViewStyle>;
 }
+
 
 export default function CurrenciesModal({
     visible,
     onDismiss,
     availableCurrencies,
     onSelect,
-    title = "Select currency"
+    title = "Select currency",
+    style
 }: CurrenciesModalProps) {
     const theme = useTheme();
 
     const render = ({ item }: { item: string }) => {
         return (
-            <Pressable
+            <List.Item
+                title={item}
                 onPress={() => {
                     onSelect(item);
                     onDismiss();
                 }}
-            >
-                <Text
-                    variant="titleLarge"
-                >
-                    {item}
-                </Text>
-            </Pressable>
+                right={(props) => (
+                    <List.Icon {...props} icon="chevron-right" />
+                )}
+            />
         )
     }
 
@@ -41,6 +42,7 @@ export default function CurrenciesModal({
             <Modal
                 visible={visible}
                 onDismiss={onDismiss}
+                style={styles.modal}
                 contentContainerStyle={[
                     styles.modal,
                     {
@@ -63,22 +65,9 @@ export default function CurrenciesModal({
                     keyExtractor={(item) => item}
                     ItemSeparatorComponent={Divider}
                     renderItem={(item) => render(item)}
-                    /* renderItem={({ item }) => (
-                        <List.Item
-                            title={item}
-                            onPress={() => {
-                                onSelect(item);
-                                onDismiss();
-                            }}
-                            right={(props) => (
-                                <List.Icon
-                                    {...props}   
-                                    icon="chevron-right"
-                                />
-                            )}
-                        />
-                    )}    */   
-                />
+                    style={styles.list}
+                    // Performance stuff
+               />
             </Modal>
         </Portal>
     )
@@ -86,12 +75,17 @@ export default function CurrenciesModal({
 
 const styles = StyleSheet.create({
     modal: {
-        backgroundColor: "white",
-        padding: 20,
+        justifyContent: "flex-end",
+
+
     },
     header: {
         flexDirection: "row",
-        justifyContent: "space-between"
+        justifyContent: "space-between",
+        padding: 10
+    },
+    list: {
+        maxHeight: 300
     },
     currency: {
 
