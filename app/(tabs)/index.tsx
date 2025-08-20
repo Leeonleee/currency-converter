@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { View, Text, StyleSheet, TouchableWithoutFeedback, Keyboard } from "react-native";
-import { Button, List, TextInput } from "react-native-paper";
+import { Button, IconButton, List, TextInput } from "react-native-paper";
 import CurrencyInput from "../../src/components/CurrencyInput";
 import CurrenciesModal from "../../src/components/CurrenciesModal";
 import CurrencyField from "../../src/components/CurrencyField";
@@ -95,9 +95,7 @@ export default function Home() {
                 />
 
                 {/* Swap currency order  */}
-                <Button onPress={handleSwap}>
-                    Swap
-                </Button>
+                <IconButton icon="swap-vertical" onPress={handleSwap} style={styles.swap}/>
 
                 <CurrenciesModal
                     visible={modalVisible}
@@ -145,4 +143,7 @@ const styles = StyleSheet.create({
     currencyField: {
         paddingHorizontal: 64
     },
+    swap: {
+        alignSelf: "center"
+    }
 })
