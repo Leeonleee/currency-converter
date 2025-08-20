@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { View, Text, StyleSheet, TouchableWithoutFeedback, Keyboard } from "react-native";
 import { Button, IconButton, List, TextInput } from "react-native-paper";
 import CurrencyInput from "../../src/components/CurrencyInput";
@@ -49,7 +49,7 @@ export default function Home() {
             const n = parseFloat(toValue);
             if (Number.isNaN(n)) return;
             const res = convert(n, toCurrency, fromCurrency, rates);
-            setFromCurrency(Number.isFinite(res) ? res.toFixed(2) : "")
+            setFromValue(Number.isFinite(res) ? res.toFixed(2) : "")
         }
     }, [ratesReady, fromCurrency, toCurrency])
 
@@ -110,6 +110,8 @@ export default function Home() {
         setToValue(tempFromValue);
 
     }
+
+    const handleToggleCrypto = useCallback((v: boolean) => setShowCrypto(v), []);
 
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
@@ -172,7 +174,7 @@ export default function Home() {
                         }
                     }}
                     showCrypto={showCrypto}
-                    onToggleCrypto={setShowCrypto}
+                    onToggleCrypto={handleToggleCrypto}
                     pinnedCount={pinnedCount}
                 />
             </View>

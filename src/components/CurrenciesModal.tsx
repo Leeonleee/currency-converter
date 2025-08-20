@@ -29,6 +29,10 @@ export default function CurrenciesModal({
 }: CurrenciesModalProps) {
     const theme = useTheme();
 
+    const handleToggle = (v: boolean) => {
+        onToggleCrypto?.(v); // do nothing if undefined
+    }
+
     const renderItem = useCallback(
         ({ item, index }: { item: string; index: number }) => {
             const name = getCurrencyDisplayName(item);
@@ -78,11 +82,8 @@ export default function CurrenciesModal({
 
                 <View style={styles.header}>
                     <Text variant="titleLarge">{title}</Text>
-                    <Switch value={showCrypto} onValueChange={onToggleCrypto} />
-                    <IconButton
-                        onPress={onDismiss}
-                        icon="close"
-                    />
+                    <Switch value={showCrypto} onValueChange={handleToggle} />
+                    <IconButton onPress={onDismiss} icon="close" />
                 </View>
                 <FlatList
                     data={availableCurrencies}
