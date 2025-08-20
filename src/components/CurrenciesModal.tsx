@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react"
-import { View, StyleSheet, FlatList, Pressable, StyleProp, ViewStyle } from "react-native"
-import { Divider, List, Modal, Portal, Text, useTheme } from "react-native-paper"
+import { View, StyleSheet, FlatList, Pressable, StyleProp, ViewStyle} from "react-native"
+import { Divider, List, Modal, Portal, Text, useTheme, IconButton } from "react-native-paper"
 
 type CurrenciesModalProps = {
     visible: boolean;
@@ -54,11 +54,10 @@ export default function CurrenciesModal({
 
                 <View style={styles.header}>
                     <Text variant="titleMedium">{title}</Text>
-                    <Pressable
+                    <IconButton
                         onPress={onDismiss}
-                    >
-                        <Text variant="titleMedium">Close</Text>
-                    </Pressable>
+                        icon="close"
+                    />
                 </View>
                 <FlatList
                     data={availableCurrencies}
@@ -82,6 +81,7 @@ const styles = StyleSheet.create({
     header: {
         flexDirection: "row",
         justifyContent: "space-between",
+        alignItems: "center",
         padding: 10
     },
     list: {
