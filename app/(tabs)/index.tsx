@@ -9,6 +9,7 @@ import { fetchRates } from "../../src/lib/api";
 import { getCurrencyDisplayName } from "../../src/lib/currencyNames";
 import { isCrypto } from "../../src/lib/crypto";
 import { PINNED_CODES } from "../../src/lib/pinnedCurrencies";
+import { usePrefs } from "../../src/providers/PrefsProvider";
 
 export default function Home() {
     const [fromCurrency, setFromCurrency] = useState("USD");
@@ -19,9 +20,9 @@ export default function Home() {
     const [availableCurrencies, setAvailableCurrencies] = useState<string[]>([]);
     const [modalVisible, setModalVisible] = useState(false);
     const [selecting, setSelecting] = useState<"from" | "to" | null>(null);
-    const [showCrypto, setShowCrypto] = useState(false);
     const [lastEdited, setLastEdited] = useState<"from" | "to" | null>(null);
     const ratesReady = !!rates[fromCurrency] && !!rates[toCurrency]
+    const { showCrypto } = usePrefs();
 
     // Load available currencies on launch
     useEffect(() => {
@@ -174,8 +175,6 @@ export default function Home() {
                             }
                         }
                     }}
-                    showCrypto={showCrypto}
-                    onToggleCrypto={handleToggleCrypto}
                     pinnedCount={pinnedCount}
                 />
             </View>
