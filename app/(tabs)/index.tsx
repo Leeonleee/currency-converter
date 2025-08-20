@@ -124,9 +124,9 @@ export default function Home() {
                             }
                         }
                     }}
-                    title={
+                   /*  title={
                         selecting === "from" ? "Select source currency" : "Select target currency"
-                    }
+                    } */
                 />
             </View>
 

@@ -53,7 +53,7 @@ export default function CurrenciesModal({
             >
 
                 <View style={styles.header}>
-                    <Text variant="titleMedium">{title}</Text>
+                    <Text variant="titleLarge">{title}</Text>
                     <IconButton
                         onPress={onDismiss}
                         icon="close"
