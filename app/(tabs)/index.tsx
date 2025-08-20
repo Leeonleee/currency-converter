@@ -162,6 +162,7 @@ export default function Home() {
                                 setToValue("")
                             }
                         } else if (selecting === "to") {
+                            // Ensures that when currency of 2nd field is changed, it doesn't convert the first currency
                             setToCurrency(currency);
                             setLastEdited("from")
                             if (toValue) {
