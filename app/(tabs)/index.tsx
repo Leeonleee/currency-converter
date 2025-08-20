@@ -139,6 +139,7 @@ export default function Home() {
                     onSelect={(currency) => {
                         if (selecting === "from") {
                             setFromCurrency(currency);
+                            setLastEdited("from");
                             if (fromValue) {
                                 const n = parseFloat(fromValue);
                                 const res = convert(n, currency, toCurrency, rates);
@@ -146,15 +147,15 @@ export default function Home() {
                             } else {
                                 setToValue("")
                             }
-                        }
-                        if (selecting === "to") {
+                        } else if (selecting === "to") {
                             setToCurrency(currency);
+                            setLastEdited("from")
                             if (toValue) {
                                 const n = parseFloat(toValue);
-                                const res = convert(n, currency, fromCurrency, rates);
-                                setFromValue(Number.isFinite(res) ? res.toFixed(2) : "")
+                                const res = convert(n, currency, toCurrency, rates);
+                                setToValue(Number.isFinite(res) ? res.toFixed(2) : "")
                             } else {
-                                setFromValue("");
+                                setToValue("");
                             }
                         }
                     }}
