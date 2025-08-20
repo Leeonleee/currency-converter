@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react"
-import { View, StyleSheet, FlatList, Pressable, StyleProp, ViewStyle} from "react-native"
+import { View, StyleSheet, FlatList, Pressable, StyleProp, ViewStyle } from "react-native"
 import { Divider, List, Modal, Portal, Text, useTheme, IconButton, Switch } from "react-native-paper"
 import { getCurrencyDisplayName } from "../lib/currencyNames";
 
@@ -25,25 +25,41 @@ export default function CurrenciesModal({
     style,
     showCrypto,
     onToggleCrypto,
-    pinnedCount
+    pinnedCount = 0
 }: CurrenciesModalProps) {
     const theme = useTheme();
 
-    const render = ({ item }: { item: string }) => {
-        const name = getCurrencyDisplayName(item);
-        return (
-            <List.Item
-                title={`${name} (${item})`}
-                onPress={() => {
-                    onSelect(item);
-                    onDismiss();
-                }}
-                right={(props) => (
-                    <List.Icon {...props} icon="chevron-right" />
-                )}
-            />
-        )
-    }
+    const renderItem = useCallback(
+        ({ item, index }: { item: string; index: number }) => {
+            const name = getCurrencyDisplayName(item);
+            const isLast = index === availableCurrencies.length - 1;
+            const isAfterPinned = pinnedCount > 0 && index === pinnedCount - 1 && !isLast;
+
+            return (
+                <View>
+                    <List.Item
+                        title={`${name} (${item})`}
+                        onPress={() => {
+                            onSelect(item);
+                            onDismiss();
+                        }}
+                        right={(props) => <List.Icon {...props} icon="chevron-right" />}
+                    />
+                    {!isLast && (
+                        <Divider
+                            style={
+                                isAfterPinned
+                                    ? { height: 2, backgroundColor: theme.colors.outline }
+                                    : undefined
+                            }
+                            bold={isAfterPinned}
+                        />
+                    )}
+                </View>
+            )
+        },
+        [availableCurrencies.length, pinnedCount, onSelect, onDismiss, theme.colors.outline]
+    )
 
     return (
         <Portal>
@@ -62,10 +78,7 @@ export default function CurrenciesModal({
 
                 <View style={styles.header}>
                     <Text variant="titleLarge">{title}</Text>
-
-
-                    <Switch value={showCrypto} onValueChange={onToggleCrypto}/>
-
+                    <Switch value={showCrypto} onValueChange={onToggleCrypto} />
                     <IconButton
                         onPress={onDismiss}
                         icon="close"
@@ -75,10 +88,10 @@ export default function CurrenciesModal({
                     data={availableCurrencies}
                     keyExtractor={(item) => item}
                     ItemSeparatorComponent={Divider}
-                    renderItem={(item) => render(item)}
+                    renderItem={renderItem}
                     style={styles.list}
-                    // Performance stuff
-               />
+                // Performance stuff
+                />
             </Modal>
         </Portal>
     )
