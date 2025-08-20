@@ -21,8 +21,8 @@ export default function Home() {
     const [modalVisible, setModalVisible] = useState(false);
     const [selecting, setSelecting] = useState<"from" | "to" | null>(null);
     const [lastEdited, setLastEdited] = useState<"from" | "to" | null>(null);
-    const ratesReady = !!rates[fromCurrency] && !!rates[toCurrency]
-    const { showCrypto } = usePrefs();
+    const ratesReady = !!rates[fromCurrency] && !!rates[toCurrency];
+    const { prefs } = usePrefs();
 
     // Load available currencies on launch
     useEffect(() => {
@@ -55,7 +55,7 @@ export default function Home() {
     }, [ratesReady, fromCurrency, toCurrency])
 
     const options = useMemo(() => {
-        const src = availableCurrencies.filter((c) => showCrypto || !isCrypto(c));
+        const src = availableCurrencies.filter((c) => prefs.showCrypto || !isCrypto(c));
         // pin currencies
         const pinnedSet = new Set(PINNED_CODES);
         const pinned = PINNED_CODES.filter((c) => src.includes(c));
@@ -67,7 +67,7 @@ export default function Home() {
                 getCurrencyDisplayName(a).localeCompare(getCurrencyDisplayName(b))
             );
         return [...pinned, ...others];
-    }, [availableCurrencies, showCrypto]);
+    }, [availableCurrencies, prefs.showCrypto]);
 
     const pinnedCount = useMemo(
         () => PINNED_CODES.filter((c) => availableCurrencies.includes(c)).length,
