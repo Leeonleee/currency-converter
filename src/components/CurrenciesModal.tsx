@@ -82,7 +82,6 @@ export default function CurrenciesModal({
 
                 <View style={styles.header}>
                     <Text variant="titleLarge">{title}</Text>
-                    {/* <Switch value={showCrypto} onValueChange={handleToggle} /> */}
                     <IconButton onPress={onDismiss} icon="close" />
                 </View>
                 <FlatList
