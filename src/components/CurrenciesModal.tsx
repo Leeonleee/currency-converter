@@ -12,6 +12,7 @@ type CurrenciesModalProps = {
     style?: StyleProp<ViewStyle>;
     showCrypto?: boolean;
     onToggleCrypto?: (value: boolean) => void;
+    pinnedCount: number;
 }
 
 
@@ -23,7 +24,8 @@ export default function CurrenciesModal({
     title = "Select currency",
     style,
     showCrypto,
-    onToggleCrypto
+    onToggleCrypto,
+    pinnedCount
 }: CurrenciesModalProps) {
     const theme = useTheme();
 
@@ -61,12 +63,7 @@ export default function CurrenciesModal({
                 <View style={styles.header}>
                     <Text variant="titleLarge">{title}</Text>
 
-                  {/*   {typeof showCrypto === "boolean" && onToggleCrypto ? (
-                        <View>
-                            <Text>Crypto</Text>
-                            <Switch value={showCrypto} onValueChange={onToggleCrypto}/>
-                        </View>
-                    ) : null } */}
+
                     <Switch value={showCrypto} onValueChange={onToggleCrypto}/>
 
                     <IconButton

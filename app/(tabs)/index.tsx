@@ -8,6 +8,7 @@ import { convert } from "../../src/lib/currency";
 import { fetchRates } from "../../src/lib/api";
 import { getCurrencyDisplayName } from "../../src/lib/currencyNames";
 import { isCrypto } from "../../src/lib/crypto";
+import { PINNED_CODES } from "../../src/lib/pinnedCurrencies";
 
 export default function Home() {
     const [fromCurrency, setFromCurrency] = useState("USD");
@@ -53,13 +54,24 @@ export default function Home() {
     }, [ratesReady, fromCurrency, toCurrency])
 
     const options = useMemo(() => {
-        return [...availableCurrencies]
-        .filter((c) => showCrypto || !isCrypto(c)) 
-        .sort((a, b) =>
-            getCurrencyDisplayName(a).localeCompare(getCurrencyDisplayName(b))
-        );
+        const src = availableCurrencies.filter((c) => showCrypto || !isCrypto(c));
+        // pin currencies
+        const pinnedSet = new Set(PINNED_CODES);
+        const pinned = PINNED_CODES.filter((c) => src.includes(c));
+
+        // sort everything else by display name
+        const others = src
+            .filter((c) => !pinnedSet.has(c))
+            .sort((a, b) =>
+                getCurrencyDisplayName(a).localeCompare(getCurrencyDisplayName(b))
+            );
+        return [...pinned, ...others];
     }, [availableCurrencies, showCrypto]);
 
+    const pinnedCount = useMemo(
+        () => PINNED_CODES.filter((c) => availableCurrencies.includes(c)).length,
+        [availableCurrencies]
+    )
 
 
     const handleFromChange = (val: string) => {
@@ -161,9 +173,7 @@ export default function Home() {
                     }}
                     showCrypto={showCrypto}
                     onToggleCrypto={setShowCrypto}
-                /*  title={
-                     selecting === "from" ? "Select source currency" : "Select target currency"
-                 } */
+                    pinnedCount={pinnedCount}
                 />
             </View>
 
